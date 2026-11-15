@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.12.0](https://github.com/macEMSuite/CuboKit/compare/0.11.1...0.12.0) (2026-11-15)
+
+
+### Features
+
+* cubes kept in memory hold their stored element type ([#102](https://github.com/macEMSuite/CuboKit/issues/102)) ([5989abe](https://github.com/macEMSuite/CuboKit/commit/5989abee47c08d5f364d86b668f5dfe21ece4dc1))
+
+
+### Bug Fixes
+
+* degenerate class patterns, class merges, degenerate-ellipse fits and polar thresholds are refused, not NaN or zero ([#99](https://github.com/macEMSuite/CuboKit/issues/99)) ([74c93a2](https://github.com/macEMSuite/CuboKit/commit/74c93a24cd8250ddd9c6e80ce4dd06ef88ab4e4f))
+* parallax position correction leaves a zero-gradient site in place, as py4DSTEM does ([#96](https://github.com/macEMSuite/CuboKit/issues/96)) ([4eec951](https://github.com/macEMSuite/CuboKit/commit/4eec951be71247da7928698ef758034fd81c572a))
+
 ## [0.11.1](https://github.com/mac4DSTEM/CuboKit/compare/0.11.0...0.11.1) (2026-11-12)
 
 
