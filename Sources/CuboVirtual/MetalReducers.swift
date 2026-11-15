@@ -493,9 +493,11 @@ enum MetalReducers {
 
 /// How one `.metal` call hands the cube's tiles to the GPU (CuboKit#8). The kernels are the same for every source; only
 /// where their input buffer comes from differs:
-/// - a ``ResidentCube``: its own buffer at the tile's offset;
-/// - a ``MemoryCube`` of at least ``noCopyMinimumBytes``: one buffer over the cube's own values, made with
+/// - a Float32 ``ResidentCube``: its own buffer at the tile's offset;
+/// - a Float32 ``MemoryCube`` of at least ``noCopyMinimumBytes``: one buffer over the cube's own values, made with
 ///   `makeBuffer(bytesNoCopy:)` on the pages that hold them, at the tile's offset;
+/// - a ``ResidentCube`` or ``MemoryCube`` held in another element type: one shared staging buffer, into which each tile is
+///   converted straight from the cube's memory (no tile array; the conversion of every read, CuboKit#90);
 /// - any other source (or a no-copy buffer refused): one shared staging buffer of the call's largest tile, made once and
 ///   filled from each tile in turn.
 /// Before this, every tile got a new buffer filled by `makeBuffer(bytes:)`: on a 100 x 100 x 64 x 64 cube that new 64 MiB
@@ -506,7 +508,7 @@ final class TileFeed {
     /// allocations, and the copy is cheap there.
     static let noCopyMinimumBytes = 1 << 20
 
-    enum Kind: Equatable { case resident, noCopy, staging }
+    enum Kind: Equatable { case resident, noCopy, converting, staging }
 
     let metal: MetalContext
     let shape: CubeShape
@@ -515,6 +517,8 @@ final class TileFeed {
     /// Holds the ``MemoryCube``'s array storage for as long as the no-copy buffer over it lives.
     private var pinned: [Float]?
     private var staging: MTLBuffer?
+    /// Converts elements `first ..< first + count` of a cube held in another type into a Float32 destination.
+    private var convert: ((_ first: Int, _ count: Int, _ into: UnsafeMutablePointer<Float>) -> Void)?
     private(set) var kind: Kind = .staging
 
     init(_ metal: MetalContext, _ source: some CubeSource, tiling: ScanTiling) throws {
@@ -522,14 +526,26 @@ final class TileFeed {
         self.shape = source.shape
         self.rowsPerTile = try tiling.rowsPerTile(for: source.shape)
         if let resident = source as? ResidentCube {
-            whole = (resident.storage.buffer, 0)
-            kind = .resident
-        } else if let memory = source as? MemoryCube,
-                  memory.values.count * MemoryLayout<Float>.stride >= Self.noCopyMinimumBytes,
-                  let wrapped = Self.noCopyBuffer(metal, memory.values) {
-            pinned = memory.values
-            whole = wrapped
-            kind = .noCopy
+            if resident.elementType == .float32 {
+                whole = (resident.storage.buffer, 0)
+                kind = .resident
+            } else {
+                let storage = resident.storage
+                convert = { storage.convert($0, $1, into: $2) }
+                kind = .converting
+            }
+        } else if let memory = source as? MemoryCube {
+            if let values = memory.floatValues {
+                if values.count * MemoryLayout<Float>.stride >= Self.noCopyMinimumBytes,
+                   let wrapped = Self.noCopyBuffer(metal, values) {
+                    pinned = values
+                    whole = wrapped
+                    kind = .noCopy
+                }
+            } else {
+                convert = { memory.convert($0, $1, into: $2) }
+                kind = .converting
+            }
         }
     }
 
@@ -558,17 +574,26 @@ final class TileFeed {
             return (whole.buffer, whole.offset + range.lowerBound * shape.elementsPerScanRow * MemoryLayout<Float>.stride,
                     positions)
         }
-        let tile = try await source.readScanTile(rows: range)
-        let target: MTLBuffer
-        if let staging, staging.length >= tile.values.count * MemoryLayout<Float>.stride {
-            target = staging
-        } else {
-            target = try metal.buffer(floats: Swift.max(tile.values.count, rowsPerTile * shape.elementsPerScanRow),
-                                      label: "CuboKit tile staging")
-            staging = target
+        if let convert {
+            try shape.requireRows(range)
+            let count = range.count * shape.elementsPerScanRow
+            let target = try stagingBuffer(count)
+            convert(range.lowerBound * shape.elementsPerScanRow, count,
+                    target.contents().bindMemory(to: Float.self, capacity: count))
+            return (target, 0, positions)
         }
+        let tile = try await source.readScanTile(rows: range)
+        let target = try stagingBuffer(tile.values.count)
         tile.values.withUnsafeBytes { target.contents().copyMemory(from: $0.baseAddress!, byteCount: $0.count) }
         return (target, 0, tile.positionCount)
+    }
+
+    /// The staging buffer, grown to hold `count` floats (at least one tile of the call's size).
+    private func stagingBuffer(_ count: Int) throws -> MTLBuffer {
+        if let staging, staging.length >= count * MemoryLayout<Float>.stride { return staging }
+        let target = try metal.buffer(floats: Swift.max(count, rowsPerTile * shape.elementsPerScanRow), label: "CuboKit tile staging")
+        staging = target
+        return target
     }
 }
 

@@ -84,7 +84,7 @@ public enum ElementType: String, Sendable, Hashable, CaseIterable, Codable {
 }
 
 /// A cube read lazily from a memory-mapped file.
-public actor MappedCube: CubeSource {
+public actor MappedCube: StoredCubeSource {
     public nonisolated let shape: CubeShape
     public nonisolated let elementType: ElementType
     /// The file and the byte offset of the first element.
@@ -152,6 +152,15 @@ public actor MappedCube: CubeSource {
         let stride = shape.elementsPerScanRow
         let values = convert(firstElement: rows.lowerBound * stride, count: rows.count * stride)
         return try ScanTile(shape: shape, rows: rows, values: values)
+    }
+
+    /// Contiguous scan rows as stored in the file, without a conversion.
+    public func readStoredScanTile(rows: Range<Int>) throws -> StoredScanTile {
+        try shape.requireRows(rows)
+        let stride = shape.elementsPerScanRow, size = elementType.byteSize
+        let bytes = Array(UnsafeRawBufferPointer(start: mapping.cubeStart + rows.lowerBound * stride * size,
+                                                 count: rows.count * stride * size))
+        return try StoredScanTile(shape: shape, rows: rows, elementType: elementType, bytes: bytes)
     }
 
     private func convert(firstElement: Int, count: Int) -> [Float] {

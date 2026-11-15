@@ -331,11 +331,14 @@ public struct PolarCube: Sendable {
         let shape = source.shape
         try requireDetector(of: shape)
         let size = annularCount * radialCount
-        // the whole result lives in memory (Double value and Bool validity per cell); the cap is that of ResidentCube.availability: half the physical memory
+        // the whole result lives in memory (Double value and Bool validity per cell); the cap is that of ResidentCube.availability,
+        // half the physical memory, less what a source held in memory already takes (CuboKit#90)
         let (total, overflow) = shape.scanCount.multipliedReportingOverflow(by: size)
         let (bytes, bytesOverflow) = total.multipliedReportingOverflow(by: MemoryLayout<Double>.stride + MemoryLayout<Bool>.stride)
-        guard !overflow, !bytesOverflow, bytes <= Int(clamping: ProcessInfo.processInfo.physicalMemory / 2) else {
-            throw CuboVirtualError.invalidInput("the polar cube of \(shape.scanCount) patterns of \(size) cells would not fit in memory")
+        let held = (source as? MemoryCube)?.byteCount ?? (source as? ResidentCube)?.byteCount ?? 0
+        guard !overflow, !bytesOverflow, bytes <= Int(clamping: ProcessInfo.processInfo.physicalMemory / 2) - held else {
+            throw CuboVirtualError.invalidInput("the polar cube of \(shape.scanCount) patterns of \(size) cells would not fit in memory"
+                + (held > 0 ? " beside the \(held / 1_000_000) MB cube already held" : ""))
         }
         let constantPlacement: Bool = {
             guard calibration.originRow?.isConstant == true, calibration.originColumn?.isConstant == true else { return false }

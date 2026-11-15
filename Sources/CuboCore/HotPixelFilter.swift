@@ -19,22 +19,24 @@ public enum HotPixelFilter {
     public static func filter(_ cube: MemoryCube, threshold: Double,
                               comparisonIndex: Int = 1) throws -> Result {
         let shape = cube.shape, n = shape.detectorCount
-        guard cube.values.allSatisfy(\.isFinite) else { throw HotPixelFilterError.invalidInput }
+        // One Float32 array for the whole filter: the cube's own when it is held as Float32 (copied on the first write
+        // below), else one conversion of its stored elements, written in place (CuboKit#90).
+        var values = cube.values
+        guard values.allSatisfy(\.isFinite) else { throw HotPixelFilterError.invalidInput }
         var mean = [Float](repeating:0,count:n)
         // NumPy reduces contiguous scan values pairwise only when the detector
         // contains one pixel; all other detector patterns have a strided reduction.
         if n == 1 {
-            mean[0] = 0 + pairwise(cube.values,start:0,count:shape.scanCount)
+            mean[0] = 0 + pairwise(values,start:0,count:shape.scanCount)
         } else {
             for scan in 0..<shape.scanCount {
-                for k in 0..<n { mean[k] += cube.values[scan*n+k] }
+                for k in 0..<n { mean[k] += values[scan*n+k] }
             }
         }
         let denominator = Float(shape.scanCount)
         for k in 0..<n { mean[k] /= denominator }
         let mask = try mask(mean:mean,rows:shape.detectorRows,columns:shape.detectorColumns,
                             threshold:threshold,comparisonIndex:comparisonIndex)
-        var values = cube.values
         let replacer = try Replacer(rows:shape.detectorRows,columns:shape.detectorColumns,mask:mask)
         values.withUnsafeMutableBufferPointer { buffer in
             for scan in 0..<shape.scanCount { replacer.apply(to:buffer,base:scan*n) }
