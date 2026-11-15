@@ -14,17 +14,24 @@ import Testing
 private func pairs() throws -> [(type: ElementType, stored: MemoryCube, float: MemoryCube, size: Int)] {
     let shape = try CubeShape(scanRows: 9, scanColumns: 8, detectorRows: 40, detectorColumns: 36)
     var state: UInt64 = 5
-    var u16 = [UInt16](), u8 = [UInt8]()
+    var u16 = [UInt16](), u8 = [UInt8](), u32 = [UInt32](), i32 = [Int32]()
     for _ in 0..<shape.elementCount {
         state = state &* 6364136223846793005 &+ 1442695040888963407
         u16.append(UInt16(truncatingIfNeeded: state >> 37))
         u8.append(UInt8(truncatingIfNeeded: state >> 51))
+        u32.append(UInt32(truncatingIfNeeded: state >> 29) | (1 << 25))
+        i32.append(Int32(truncatingIfNeeded: state >> 23))
     }
     return [
         (.uint16, try MemoryCube(shape: shape, elementType: .uint16, bytes: u16.withUnsafeBytes { Array($0) }),
          try MemoryCube(shape: shape, values: u16.map(Float.init)), 2),
         (.uint8, try MemoryCube(shape: shape, elementType: .uint8, bytes: u8.withUnsafeBytes { Array($0) }),
          try MemoryCube(shape: shape, values: u8.map(Float.init)), 1),
+        // above 2^24: the Float32 cube is the stored cube's own conversion (MappedCube's), the comparison the reductions make
+        (.uint32, try MemoryCube(shape: shape, elementType: .uint32, bytes: u32.withUnsafeBytes { Array($0) }),
+         try MemoryCube(shape: shape, values: MemoryCube(shape: shape, elementType: .uint32, bytes: u32.withUnsafeBytes { Array($0) }).values), 4),
+        (.int32, try MemoryCube(shape: shape, elementType: .int32, bytes: i32.withUnsafeBytes { Array($0) }),
+         try MemoryCube(shape: shape, values: MemoryCube(shape: shape, elementType: .int32, bytes: i32.withUnsafeBytes { Array($0) }).values), 4),
     ]
 }
 

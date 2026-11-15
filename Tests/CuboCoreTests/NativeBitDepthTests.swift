@@ -104,6 +104,38 @@ struct NativeBitDepthTests {
         #expect(bits(ha.cube.values) == bits(hb.cube.values) && ha.mask == hb.mask && bits(ha.mean) == bits(hb.mean))
     }
 
+    @Test func the32BitIntegerTypesReadAsTheMappingBitForBit() async throws {
+        // Above 2^24 a 32-bit integer does not convert exactly: the stored cube must round as MappedCube does (vDSP, to
+        // nearest even), not merely close. Compared with the Float32 path a MappedCube of the same bytes gives.
+        let shape = try CubeShape(scanRows: 3, scanColumns: 2, detectorRows: 4, detectorColumns: 5)
+        let n = shape.elementCount
+        let u32: [UInt32] = (0..<n).map { k in [16_777_217, 16_777_219, 4_294_967_295, 33_554_435, UInt32(k), 2_147_483_649][k % 6] &+ UInt32(k % 3) }
+        let i32: [Int32] = (0..<n).map { k in [16_777_217, -16_777_219, .min, .max, Int32(k) - 7, -33_554_435][k % 6] &- Int32(k % 3) }
+        for (type, raw, descr) in [(ElementType.uint32, bytes(u32), "<u4"), (.int32, bytes(i32), "<i4")] {
+            let url = FileManager.default.temporaryDirectory.appendingPathComponent("native32-\(UUID().uuidString).npy")
+            defer { try? FileManager.default.removeItem(at: url) }
+            var header = "{'descr': '\(descr)', 'fortran_order': False, 'shape': (3, 2, 4, 5), }"
+            while (10 + header.utf8.count + 1) % 64 != 0 { header += " " }
+            header += "\n"
+            var data = Data([0x93, 0x4E, 0x55, 0x4D, 0x50, 0x59, 1, 0])
+            data.append(contentsOf: [UInt8(header.utf8.count & 0xFF), UInt8(header.utf8.count >> 8)])
+            data.append(contentsOf: Array(header.utf8))
+            data.append(contentsOf: raw)
+            try data.write(to: url)
+            let mapped = try MappedCube(npy: url)
+            let float = try MemoryCube(shape: shape, values: try await mapped.readScanTile(rows: 0..<shape.scanRows).values)
+            let stored = try await MemoryCube(loading: mapped, tiling: .rows(1))
+            #expect(stored.elementType == type && stored.byteCount == n * 4)
+            #expect(bits(stored.values) == bits(float.values))
+            for rows in [0..<1, 1..<3] {
+                #expect(bits(try await stored.readScanTile(rows: rows).values) == bits(try await float.readScanTile(rows: rows).values))
+            }
+            #expect(bits(try await stored.readPattern(row: 2, column: 1).values) == bits(try await float.readPattern(row: 2, column: 1).values))
+            // and the rounding is round-to-nearest-even of the integer, as NumPy's astype(np.float32)
+            #expect(stored.values[0] == Float(type == .uint32 ? Double(u32[0]) : Double(i32[0])))
+        }
+    }
+
     @Test func theEightByteTypesAreHeldAsFloat32() throws {
         let shape = try CubeShape(scanRows: 1, scanColumns: 2, detectorRows: 1, detectorColumns: 2)
         let cube = try MemoryCube(shape: shape, elementType: .float64, bytes: bytes([1.5, -2.0, 3.25, 1e40] as [Double]))
