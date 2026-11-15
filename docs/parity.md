@@ -21,7 +21,7 @@ States: **present** (pinned against py4DSTEM or planted truth; numerics held to 
 
 | py4DSTEM | CuboKit | State | Mark | Tolerance (source) |
 |---|---|---|---|---|
-| `DataCube(data)`, `.data` | `MemoryCube(shape:values:)`, `MappedCube(npy:)` (lazy, memory-mapped), `CubeSource` | present (Float32 on read; ten element types) | useful | exact (shapes, indices, values read) |
+| `DataCube(data)`, `.data` | `MemoryCube(shape:values:)`, `MappedCube(npy:)` (lazy, memory-mapped), `CubeSource` | present (Float32 on read; ten element types; a `MemoryCube` loaded from a `StoredCubeSource` holds the stored type, the 8-byte types as Float32, CuboKit#90) | useful | exact (shapes, indices, values read) |
 | `R_Nx`, `R_Ny`, `Q_Nx`, `Q_Ny` | `CubeShape.scanRows`, `scanColumns`, `detectorRows`, `detectorColumns` | present | useful | exact (shapes, indices, values read) |
 | `Rshape`, `Qshape`, `R_N` | `CubeShape`, `scanCount`, `detectorCount` | present | useful | exact (shapes, indices, values read) |
 | `datacube[rx, ry]` | `readPattern(row:column:)` | present | useful | exact (shapes, indices, values read) |
@@ -503,7 +503,7 @@ parked for later. Speed against py4DSTEM is in `docs/benchmarks.md`.
   stays Float32 on purpose (`HotPixelFilter`).
 - **`Calibration` follows py4DSTEM:** binning, thinning, padding and resampling change the pixel sizes but not the origin (in
   detector pixels), so an origin measured before `bin_Q(2)` is wrong afterwards. A caller that stores the origin rescales it.
-- **`ResidentCube`** is capped at half of the physical memory and needs the cube in one Metal buffer
+- **`ResidentCube`** holds the stored element type of a `StoredCubeSource` (types of at most four bytes; a non-Float32 cube is converted per tile into one staging buffer for Metal, bit-identical to the Float32 path) and is capped at half of the physical memory and needs the cube in one Metal buffer
   (`ResidentCube.availability(of:)` says which limit and how far over). No chunked variant (decided 2026-10-22): the app falls
   back to the tiled path.
 - **Metal sums are Float32 within a tile:** a per-tile sum or product past about 3.4e38, or a selection weight below the

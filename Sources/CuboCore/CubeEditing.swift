@@ -3,8 +3,8 @@
 //  Eager edits of a cube that py4DSTEM's `DataCube` methods do: set_scan_shape, swap_RQ, swap_Rxy, swap_Qxy, bin_R, thin_R,
 //  pad_Q, resample_Q (bilinear) and median_filter_masked_pixels. `crop_*` and `bin_Q` are ``ViewedCube``.
 //
-//  Reference: py4DSTEM `preprocess/preprocess.py` at f050d207. Each function reads its source tile by tile (set_scan_shape and
-//  the two scan swaps load the whole cube and need twice its size in memory) and returns a
+//  Reference: py4DSTEM `preprocess/preprocess.py` at f050d207. Each function reads its source tile by tile (set_scan_shape keeps a
+//  loaded cube in its stored type and shares a MemoryCube's memory; the two scan swaps hold the result and one tile) and returns a
 //  ``MemoryCube`` with the ``Calibration`` the py4DSTEM function leaves behind (pixel sizes updated; see ``Calibration``).
 //  Where py4DSTEM prints a message and returns the cube unchanged (an impossible `set_scan_shape`), the kit throws.
 //  Float32 in and out; sums run in Double and are rounded once (NumPy accumulates in Float32: relative 1e-6 of the largest
@@ -30,22 +30,31 @@ public enum CubeEditing {
                                     calibration: Calibration = Calibration()) async throws -> EditedCube {
         let s = source.shape
         guard rows > 0, columns > 0, rows * columns == s.scanCount else { throw CuboError.invalidShape([rows, columns]) }
-        let all = try await MemoryCube(loading: source).values
         let shape = try CubeShape(scanRows: rows, scanColumns: columns, detectorRows: s.detectorRows, detectorColumns: s.detectorColumns)
-        return EditedCube(cube: try MemoryCube(shape: shape, values: all), calibration: calibration)
+        // The same elements under a new shape: a MemoryCube is shared as it is, any other source is loaded once (in its stored
+        // type when it hands one out).
+        let loaded: MemoryCube
+        if let memory = source as? MemoryCube { loaded = memory } else { loaded = try await MemoryCube(loading: source) }
+        return EditedCube(cube: try MemoryCube(reshaping: loaded, to: shape), calibration: calibration)
     }
 
     /// `swap_RQ`: the first two axes and the last two trade places, so a `(R, R, Q, Q)` cube becomes `(Q, Q, R, R)`.
     public static func swapScanAndDetector(of source: some CubeSource,
                                            calibration: Calibration = Calibration()) async throws -> EditedCube {
         let s = source.shape
-        let v = try await MemoryCube(loading: source).values
         let out = try CubeShape(scanRows: s.detectorRows, scanColumns: s.detectorColumns, detectorRows: s.scanRows, detectorColumns: s.scanColumns)
-        var o = [Float](repeating: 0, count: v.count)
+        var o = [Float](repeating: 0, count: s.elementCount)
         let dc = s.detectorCount
-        for r in 0..<s.scanRows { for c in 0..<s.scanColumns { for q in 0..<dc {
-            o[q * s.scanCount + (r * s.scanColumns + c)] = v[(r * s.scanColumns + c) * dc + q]
-        } } }
+        // Read tile by tile into the output: the result and one tile in memory, not a second copy of the cube.
+        for range in try ScanTiling.automatic.ranges(for: s) {
+            try Task.checkCancellation()
+            let first = range.lowerBound * s.scanColumns
+            try await withScanRows(of: source, rows: range) { v in
+                for k in 0..<(range.count * s.scanColumns) { for q in 0..<dc {
+                    o[q * s.scanCount + (first + k)] = v[k * dc + q]
+                } }
+            }
+        }
         return EditedCube(cube: try MemoryCube(shape: out, values: o), calibration: calibration)
     }
 
@@ -53,14 +62,20 @@ public enum CubeEditing {
     public static func swapScanAxes(of source: some CubeSource,
                                     calibration: Calibration = Calibration()) async throws -> EditedCube {
         let s = source.shape
-        let v = try await MemoryCube(loading: source).values
         let out = try CubeShape(scanRows: s.scanColumns, scanColumns: s.scanRows, detectorRows: s.detectorRows, detectorColumns: s.detectorColumns)
-        var o = [Float](repeating: 0, count: v.count)
+        var o = [Float](repeating: 0, count: s.elementCount)
         let dc = s.detectorCount
-        for r in 0..<s.scanRows { for c in 0..<s.scanColumns {
-            let from = (r * s.scanColumns + c) * dc, to = (c * s.scanRows + r) * dc
-            o.replaceSubrange(to..<(to + dc), with: v[from..<(from + dc)])
-        } }
+        for range in try ScanTiling.automatic.ranges(for: s) {
+            try Task.checkCancellation()
+            try await withScanRows(of: source, rows: range) { v in
+                o.withUnsafeMutableBufferPointer { target in
+                    for r in range { for c in 0..<s.scanColumns {
+                        let from = ((r - range.lowerBound) * s.scanColumns + c) * dc, to = (c * s.scanRows + r) * dc
+                        (target.baseAddress! + to).update(from: v + from, count: dc)
+                    } }
+                }
+            }
+        }
         return EditedCube(cube: try MemoryCube(shape: out, values: o), calibration: calibration)
     }
 

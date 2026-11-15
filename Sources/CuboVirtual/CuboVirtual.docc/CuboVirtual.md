@@ -3,7 +3,7 @@
 Virtual detectors and the reductions over a cube: virtual images, the mean, median and maximum diffraction pattern,
 the centre of mass, probe size and origins. Each runs on the CPU or with Metal, behind one API.
 
-``ResidentCube`` holds a cube in one Metal buffer for repeated reductions; ask ``ResidentCube/availability(of:physicalMemory:)``
+``ResidentCube`` holds a cube in one Metal buffer for repeated reductions; ask ``ResidentCube/availability(of:elementType:physicalMemory:)``
 first, since it is capped at half of the physical memory. ``PolarCube`` is py4DSTEM's polar-elliptical transform of every
 pattern and ``RadialBackground`` its radial background, subtraction and local average; both run on the CPU in Double.
 

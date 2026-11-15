@@ -139,9 +139,13 @@ public enum PtychographyPreparation {
     /// Shifts every pattern of `source` so its origin is at the corner and takes the square root of the clipped
     /// values. The shift follows `scipy.ndimage.shift(pattern, -origin)`: `out[i, j] = pattern[i + originRow, j + originColumn]`,
     /// interpolated, with wrap-around.
+    ///
+    /// The amplitudes are held in Double, eight bytes per detector pixel and position; a stack larger than `maxBytes` (half
+    /// the physical memory by default) throws `MemoryCapExceeded` before anything is read.
     public static func amplitudes(from source: some CubeSource, origins: PtychographyOrigins,
                                   shift: PtychographyShift = .cubicSpline,
-                                  tiling: ScanTiling = .automatic) async throws -> PtychographyAmplitudes {
+                                  tiling: ScanTiling = .automatic,
+                                  maxBytes: Int = MemoryCapExceeded.defaultCap()) async throws -> PtychographyAmplitudes {
         let shape = source.shape
         let rows = shape.detectorRows, columns = shape.detectorColumns
         let scanColumns = shape.scanColumns, count = shape.scanRows * shape.scanColumns
@@ -157,6 +161,8 @@ public enum PtychographyPreparation {
         guard originRows.count == count, originColumns.count == count,
               originRows.allSatisfy({ $0.isFinite && abs($0) < 1e9 }),
               originColumns.allSatisfy({ $0.isFinite && abs($0) < 1e9 }) else { throw PtychographyError.invalidInput }
+        try MemoryCapExceeded.check("The ptychography amplitude stack", count: count * n,
+                                    elementBytes: MemoryLayout<Double>.stride, cap: maxBytes)
         var out = [Double](repeating: 0, count: count * n)
         var total = 0.0, clipped = 0.0
         let fft = FFT2D(rows: rows, columns: columns)

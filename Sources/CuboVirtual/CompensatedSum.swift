@@ -161,14 +161,14 @@ enum CompensatedSum {
     }
 }
 
-/// The values of scan rows `range` of `source` as a pointer valid inside `body`: read in place for a ``MemoryCube`` (no tile
+/// The values of scan rows `range` of `source` as a pointer valid inside `body`: read in place for a Float32 ``MemoryCube`` (no tile
 /// copy), else from `readScanTile`.
 func withTileValues<R>(of source: some CubeSource, rows range: Range<Int>,
                        _ body: (UnsafePointer<Float>) throws -> R) async throws -> R {
-    if let memory = source as? MemoryCube {
+    if let memory = source as? MemoryCube, let values = memory.floatValues {
         try source.shape.requireRows(range)
         let offset = range.lowerBound * source.shape.elementsPerScanRow
-        return try memory.values.withUnsafeBufferPointer { try body($0.baseAddress! + offset) }
+        return try values.withUnsafeBufferPointer { try body($0.baseAddress! + offset) }
     }
     let tile = try await source.readScanTile(rows: range)
     return try tile.values.withUnsafeBufferPointer { try body($0.baseAddress!) }

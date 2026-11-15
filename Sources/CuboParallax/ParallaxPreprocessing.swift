@@ -144,7 +144,7 @@ public enum ParallaxPreprocessing: Sendable {
             for image in stack { error += abs(image[target] - incoherent[target]) * window[p] }
         }
         error /= windowSum * Double(selected.count) * stackMean
-        guard stack.flatMap({$0}).allSatisfy(\.isFinite), incoherent.allSatisfy(\.isFinite), error.isFinite else { throw ParallaxError.nonfiniteValues }
+        guard stack.allSatisfy({ $0.allSatisfy(\.isFinite) }), incoherent.allSatisfy(\.isFinite), error.isFinite else { throw ParallaxError.nonfiniteValues }
         var paddedWindow = [Double](repeating: 0, count: planeCount)
         for p in 0..<shape.scanCount {
             paddedWindow[(p / shape.scanColumns + paddingRows / 2) * columns + p % shape.scanColumns + paddingColumns / 2] = window[p]
