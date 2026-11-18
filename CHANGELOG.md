@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.12.1](https://github.com/EMSuite/CuboKit/compare/0.12.0...0.12.1) (2026-11-18)
+
+
+### Bug Fixes
+
+* the symmetry centre guess scores each candidate's 5 x 5 window, so the SiGe beam wins over a first-order disk ([#104](https://github.com/EMSuite/CuboKit/issues/104)) ([b1bdf9c](https://github.com/EMSuite/CuboKit/commit/b1bdf9cc905f54a74227c26ee786cdf6134338ee))
+
 ## [0.12.0](https://github.com/macEMSuite/CuboKit/compare/0.11.1...0.12.0) (2026-11-15)
 
 
