@@ -176,8 +176,11 @@ public enum BraggOrigin {
     /// `gaussian_filter(σ = 1, mode="reflect")`. The candidates: its local maxima (equal to the maximum of the 5 × 5 window,
     /// scipy's `maximum_filter(size=5)`) above 5% of the largest value; with `candidates` only that many of the highest
     /// (ties in raster order), every one by default, so a lattice whose disks are all detected equally often still has its
-    /// centre among them. The score of a candidate pixel c: Σ min(M(p), M(2c − p)) over the pixels p whose mirror is on the
-    /// detector. The best score wins, the first of equal scores. Peak counts, not intensities, so one strong reflection cannot
+    /// centre among them. Every pixel c of each candidate's 5 × 5 window is scored: Σ min(M(p), M(2c − p)) over the pixels p
+    /// whose mirror is on the detector. The best score wins, the first of equal scores (candidates in order, each window in
+    /// raster order). The window, because the beam's count maximum can sit a pixel off the symmetry centre: on the SiGe cube
+    /// with py4DSTEM's peaks at the app's sige recipe settings the beam's maximum (65, 65) scores 59,991 and a first-order disk (50, 68) 74,715, while
+    /// (64, 64) scores 159,345 (4DSTEM-Studio#479). Peak counts, not intensities, so one strong reflection cannot
     /// outweigh the symmetry of all the others. On py4DSTEM's Si/SiGe tutorial cube (128 × 128 detector) it returns the
     /// direct beam at (64, 64) where the brightest point of the map is a first-order reflection at (49, 69).
     ///
@@ -213,19 +216,31 @@ public enum BraggOrigin {
         let chosen = maxima.enumerated().sorted { $0.element.value != $1.element.value ? $0.element.value > $1.element.value
                                                                                        : $0.offset < $1.offset }
             .prefix(candidates ?? maxima.count).map(\.element.index)
+        // Each candidate's 5 x 5 window is scored, not the candidate alone: the beam's count maximum can sit a pixel off the
+        // symmetry centre, and a centre one pixel off puts every mirrored disk two pixels from its partner (4DSTEM-Studio#479).
         var best: (score: Double, index: Int)?
-        for index in chosen {
-            let r0 = index / columns, c0 = index % columns
-            var score = 0.0
-            for r in max(0, 2 * r0 - (rows - 1))...min(rows - 1, 2 * r0) {
-                for c in max(0, 2 * c0 - (columns - 1))...min(columns - 1, 2 * c0) {
-                    score += min(map[r * columns + c], map[(2 * r0 - r) * columns + (2 * c0 - c)])
+        for candidate in chosen {
+            let cr = candidate / columns, cc = candidate % columns
+            for r0 in max(0, cr - 2)...min(rows - 1, cr + 2) {
+                for c0 in max(0, cc - 2)...min(columns - 1, cc + 2) {
+                    let score = symmetryScore(map, rows: rows, columns: columns, row: r0, column: c0)
+                    if best == nil || score > best!.score { best = (score, r0 * columns + c0) }
                 }
             }
-            if best == nil || score > best!.score { best = (score, index) }
         }
         guard let best else { return nil }
         return BraggDetectorCenter(row: Double(best.index / columns), column: Double(best.index % columns))
+    }
+
+    /// Σ min(M(p), M(2c − p)) about the pixel c = (`row`, `column`), over the pixels p whose mirror is on the detector.
+    static func symmetryScore(_ map: [Double], rows: Int, columns: Int, row r0: Int, column c0: Int) -> Double {
+        var score = 0.0
+        for r in max(0, 2 * r0 - (rows - 1))...min(rows - 1, 2 * r0) {
+            for c in max(0, 2 * c0 - (columns - 1))...min(columns - 1, 2 * c0) {
+                score += min(map[r * columns + c], map[(2 * r0 - r) * columns + (2 * c0 - c)])
+            }
+        }
+        return score
     }
 
     /// py4DSTEM's `BraggVectors.histogram(mode="raw", sampling=1)`: every peak's intensity shared bilinearly between the four

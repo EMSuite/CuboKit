@@ -130,6 +130,35 @@ private func model(_ label: String) -> (OriginFitModel, Bool) {
         #expect(try BraggOrigin.symmetryCenterGuess(none, detectorRows: 8, detectorColumns: 8) == nil)
     }
 
+    /// 4DSTEM-Studio#479: on the SiGe cube's count map (py4DSTEM 0.14.19 `find_Bragg_disks` at the app's sige recipe settings,
+    /// 262,015 peaks; Fixtures/sige-counts.f64, the unsmoothed `rawHistogram` with every intensity 1, 128 x 128 row-major
+    /// little-endian Float64) the beam's count maximum sits at (65, 65), a pixel off the symmetry centre, and scored alone it
+    /// loses to a first-order disk at (50, 68). Scoring each candidate's 5 x 5 window finds (64, 64). Each pixel's count, rounded,
+    /// becomes that many peaks at the pixel itself (integer coordinates deposit their whole weight on it); the rounding moves no
+    /// guess (checked in NumPy: (50, 68) before the fix, (64, 64) after, exact or rounded). Mutation: score the candidate alone
+    /// -> (50, 68), red.
+    @Test func symmetryGuessScoresTheWindowAroundEachCandidate() throws {
+        let url = URL(fileURLWithPath: #filePath).deletingLastPathComponent().appendingPathComponent("Fixtures/sige-counts.f64")
+        let data = try Data(contentsOf: url)
+        let counts = data.withUnsafeBytes { raw in
+            stride(from: 0, to: raw.count, by: 8).map {
+                Double(bitPattern: UInt64(littleEndian: raw.loadUnaligned(fromByteOffset: $0, as: UInt64.self)))
+            }
+        }
+        try #require(counts.count == 128 * 128)
+        var peaks: [BraggPeak] = []
+        for (index, count) in counts.enumerated() {
+            let n = Int(count.rounded())
+            guard n > 0 else { continue }
+            let peak = BraggPeak(row: Double(index / 128), column: Double(index % 128), intensity: 1)
+            peaks.append(contentsOf: repeatElement(peak, count: n))
+        }
+        #expect(peaks.count == 261_844)
+        let sige = BraggVectors(scanRows: 1, scanColumns: 1, peaks: [peaks])
+        let guess = try #require(try BraggOrigin.symmetryCenterGuess(sige, detectorRows: 128, detectorColumns: 128))
+        #expect(guess == BraggDetectorCenter(row: 64, column: 64))
+    }
+
     @Test func originFitMaskLeavesPositionsOut() throws {
         // A plane with one wild value: masked out, the fit is the plane exactly.
         var values = [Double]()
