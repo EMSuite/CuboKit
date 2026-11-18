@@ -140,14 +140,16 @@ def symmetry_guess(peak_lists, shape, candidates=None):
     rows, cols = shape
     best = None
     for k in order:
-        r, c = (int(v) for v in idx[k])
-        i0, i1 = max(0, 2 * r - (rows - 1)), min(rows - 1, 2 * r)
-        j0, j1 = max(0, 2 * c - (cols - 1)), min(cols - 1, 2 * c)
-        a = m[i0 : i1 + 1, j0 : j1 + 1]
-        b = m[2 * r - i1 : 2 * r - i0 + 1, 2 * c - j1 : 2 * c - j0 + 1][::-1, ::-1]
-        score = float(np.minimum(a, b).sum())
-        if best is None or score > best[0]:
-            best = (score, (r, c))
+        cr, cc = (int(v) for v in idx[k])
+        for r in range(max(0, cr - 2), min(rows - 1, cr + 2) + 1):  # each candidate's 5 x 5 window (4DSTEM-Studio#479)
+            for c in range(max(0, cc - 2), min(cols - 1, cc + 2) + 1):
+                i0, i1 = max(0, 2 * r - (rows - 1)), min(rows - 1, 2 * r)
+                j0, j1 = max(0, 2 * c - (cols - 1)), min(cols - 1, 2 * c)
+                a = m[i0 : i1 + 1, j0 : j1 + 1]
+                b = m[2 * r - i1 : 2 * r - i0 + 1, 2 * c - j1 : 2 * c - j0 + 1][::-1, ::-1]
+                score = float(np.minimum(a, b).sum())
+                if best is None or score > best[0]:
+                    best = (score, (r, c))
     return [float(v) for v in best[1]]
 
 
