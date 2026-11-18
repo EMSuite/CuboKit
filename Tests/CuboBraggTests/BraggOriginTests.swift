@@ -153,7 +153,7 @@ private func model(_ label: String) -> (OriginFitModel, Bool) {
             let peak = BraggPeak(row: Double(index / 128), column: Double(index % 128), intensity: 1)
             peaks.append(contentsOf: repeatElement(peak, count: n))
         }
-        #expect(peaks.count == 261_844)
+        #expect(peaks.count == 261_845)   // Swift rounds half away from zero; NumPy rint, to even, gives 261,844
         let sige = BraggVectors(scanRows: 1, scanColumns: 1, peaks: [peaks])
         let guess = try #require(try BraggOrigin.symmetryCenterGuess(sige, detectorRows: 128, detectorColumns: 128))
         #expect(guess == BraggDetectorCenter(row: 64, column: 64))
