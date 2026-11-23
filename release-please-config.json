@@ -22,7 +22,7 @@
     ".": {
       "package-name": "CuboKit",
       "changelog-path": "CHANGELOG.md",
-      "extra-files": ["CITATION.cff", "README.md"]
+      "extra-files": ["CITATION.cff", "README.md", "docs/status.md"]
     }
   }
 }
