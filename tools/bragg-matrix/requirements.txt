@@ -1,0 +1,4 @@
+-r ../requirements.txt
+# The disk matrix also simulates its patterns with abTEM (tools/bragg-matrix/pins.py).
+abtem==1.0.10
+ase==3.29.0
