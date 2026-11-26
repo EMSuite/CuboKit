@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.13.0](https://github.com/EMSuite/CuboKit/compare/0.12.1...0.13.0) (2026-11-26)
+
+
+### ⚠ BREAKING CHANGES
+
+* ElementType.convertsExactlyToFloat32 is removed. It was deprecated as unused and nothing in the suite reads it.
+
+### Fixtures and tests
+
+* the disk matrix checks Bragg disks end to end on abTEM nanobeam patterns of twelve zones against py4DSTEM ([#117](https://github.com/EMSuite/CuboKit/issues/117)) ([bd0b6e1](https://github.com/EMSuite/CuboKit/commit/bd0b6e1371487de826008272d6ff6dc63b1a2cda))
+
+
+### Code Refactoring
+
+* remove the unused ElementType.convertsExactlyToFloat32; status names 0.11.1 to 0.12.1 ([#114](https://github.com/EMSuite/CuboKit/issues/114)) ([4fd1500](https://github.com/EMSuite/CuboKit/commit/4fd1500f5d1de86fa64b1802baac60445059a40f))
+
 ## [0.12.1](https://github.com/EMSuite/CuboKit/compare/0.12.0...0.12.1) (2026-11-18)
 
 
