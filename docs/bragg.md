@@ -144,4 +144,20 @@ Measured gaps (peak counts and order equal in every case): py4DSTEM, position 1.
 gained an `Edge` mode (`reflect` is scipy's default and what `find_Bragg_disks` uses; `nearest` stays the default of the origin
 measurement), pinned to scipy in `GaussianEdgeTests`.
 
-Regenerate with `tools/bragg/pins.py` (`CONTRIBUTING.md`).
+The disk matrix (`tools/bragg-matrix/pins.py`, `Tests/CuboBraggTests/Fixtures/bragg-matrix.{json,f64}`, 6.7 MB) checks the same
+detector on nanobeam patterns like a user's. Patterns: abTEM 1.0.10 (Lobato, 20 nm, 200 kV, a probe at the centre), twelve zones of
+fcc Al and Au, diamond Si, MgO, bcc Fe, SrTiO3, hcp Mg, WS2 and rutile TiO2, at 2 and 4 mrad, read onto a 128 × 128 detector of
+0.625 mrad per pixel, noiseless and at 2e4 electrons. The run is end to end:
+- the vacuum probe's radius (`ProbeSize.estimate` against `get_probe_size`, 1e-12 relative);
+- its sigmoid kernel (`ProbeKernel.sigmoid` against `Probe.get_kernel(mode="sigmoid", radii=(r, 2r))`, 1e-12 of its maximum);
+- `find_Bragg_disks` with poly and multicorr subpixel (the peaks as sets: 1e-9 px and 1e-10 relative, as above);
+- recall: the share of the strong discs (2 % of the strongest diffracted disc) found inside their disc, never below py4DSTEM's.
+
+py4DSTEM's own recall at these keywords (relative cut 0.005 of the direct beam) runs from 0.2 (MgO [001], Au [111]) to 1. A
+strongly diffracting crystal keeps only its brightest discs, which is py4DSTEM's answer, not a miss of the port. In a 20 nm
+crystal a disc is brightest near its exact Bragg condition, its inner edge, so the correlation maximum can sit about 10 % of g
+inside the disc's geometric centre. The 24 noiseless poly cases run on every pull request; the other 72 also run in the fast
+target (each is a single 128 × 128 pattern).
+
+Regenerate with `tools/bragg/pins.py` (`CONTRIBUTING.md`); the matrix with `tools/bragg-matrix/pins.py` in that environment
+plus `tools/bragg-matrix/requirements.txt`.
