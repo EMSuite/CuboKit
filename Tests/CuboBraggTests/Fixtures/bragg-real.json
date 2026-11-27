@@ -1,0 +1,551 @@
+{
+ "arrays": {
+  "e_nanowire_0_27": {
+   "file": "f64",
+   "offset": 41940,
+   "shape": [
+    1,
+    3
+   ]
+  },
+  "e_nanowire_20_15": {
+   "file": "f64",
+   "offset": 41472,
+   "shape": [
+    15,
+    3
+   ]
+  },
+  "e_nanowire_40_15": {
+   "file": "f64",
+   "offset": 41517,
+   "shape": [
+    13,
+    3
+   ]
+  },
+  "e_nanowire_60_15": {
+   "file": "f64",
+   "offset": 41556,
+   "shape": [
+    30,
+    3
+   ]
+  },
+  "e_nanowire_80_15": {
+   "file": "f64",
+   "offset": 41646,
+   "shape": [
+    33,
+    3
+   ]
+  },
+  "e_nanowire_8_8": {
+   "file": "f64",
+   "offset": 41745,
+   "shape": [
+    33,
+    3
+   ]
+  },
+  "e_nanowire_98_22": {
+   "file": "f64",
+   "offset": 41844,
+   "shape": [
+    32,
+    3
+   ]
+  },
+  "e_nio_0_0": {
+   "file": "f64",
+   "offset": 337014,
+   "shape": [
+    0,
+    3
+   ]
+  },
+  "e_nio_104_112": {
+   "file": "f64",
+   "offset": 336948,
+   "shape": [
+    8,
+    3
+   ]
+  },
+  "e_nio_144_176": {
+   "file": "f64",
+   "offset": 336855,
+   "shape": [
+    15,
+    3
+   ]
+  },
+  "e_nio_64_104": {
+   "file": "f64",
+   "offset": 336993,
+   "shape": [
+    7,
+    3
+   ]
+  },
+  "e_nio_8_152": {
+   "file": "f64",
+   "offset": 336972,
+   "shape": [
+    7,
+    3
+   ]
+  },
+  "e_nio_8_96": {
+   "file": "f64",
+   "offset": 336900,
+   "shape": [
+    8,
+    3
+   ]
+  },
+  "e_nio_96_80": {
+   "file": "f64",
+   "offset": 336924,
+   "shape": [
+    8,
+    3
+   ]
+  },
+  "k_nanowire": {
+   "file": "f64",
+   "offset": 20736,
+   "shape": [
+    144,
+    144
+   ]
+  },
+  "k_nio": {
+   "file": "f64",
+   "offset": 189399,
+   "shape": [
+    384,
+    384
+   ]
+  },
+  "m_nanowire": {
+   "file": "f64",
+   "offset": 0,
+   "shape": [
+    144,
+    144
+   ]
+  },
+  "m_nio": {
+   "file": "f64",
+   "offset": 41943,
+   "shape": [
+    384,
+    384
+   ]
+  },
+  "p_nanowire": {
+   "file": "u8",
+   "offset": 0,
+   "shape": [
+    7,
+    144,
+    144
+   ]
+  },
+  "p_nio": {
+   "file": "u8",
+   "offset": 145152,
+   "shape": [
+    7,
+    384,
+    384
+   ]
+  }
+ },
+ "cases": [
+  {
+   "expected": "e_nanowire_20_15",
+   "id": "nanowire_20_15",
+   "options": {
+    "corrPower": 1.0,
+    "edgeBoundary": 4,
+    "maxNumPeaks": 1000,
+    "minAbsoluteIntensity": 8.0,
+    "minPeakSpacing": 5.0,
+    "minRelativeIntensity": 0.0,
+    "relativeReferenceMinimumRadiusPx": 0,
+    "relativeToPeak": 0,
+    "sigma_cc": 0.0,
+    "sigma_dp": 0.0,
+    "subpixel": 1,
+    "upsample_factor": 8
+   },
+   "pattern": 0,
+   "scene": "nanowire"
+  },
+  {
+   "expected": "e_nanowire_40_15",
+   "id": "nanowire_40_15",
+   "options": {
+    "corrPower": 1.0,
+    "edgeBoundary": 4,
+    "maxNumPeaks": 1000,
+    "minAbsoluteIntensity": 8.0,
+    "minPeakSpacing": 5.0,
+    "minRelativeIntensity": 0.0,
+    "relativeReferenceMinimumRadiusPx": 0,
+    "relativeToPeak": 0,
+    "sigma_cc": 0.0,
+    "sigma_dp": 0.0,
+    "subpixel": 1,
+    "upsample_factor": 8
+   },
+   "pattern": 1,
+   "scene": "nanowire"
+  },
+  {
+   "expected": "e_nanowire_60_15",
+   "id": "nanowire_60_15",
+   "options": {
+    "corrPower": 1.0,
+    "edgeBoundary": 4,
+    "maxNumPeaks": 1000,
+    "minAbsoluteIntensity": 8.0,
+    "minPeakSpacing": 5.0,
+    "minRelativeIntensity": 0.0,
+    "relativeReferenceMinimumRadiusPx": 0,
+    "relativeToPeak": 0,
+    "sigma_cc": 0.0,
+    "sigma_dp": 0.0,
+    "subpixel": 1,
+    "upsample_factor": 8
+   },
+   "pattern": 2,
+   "scene": "nanowire"
+  },
+  {
+   "expected": "e_nanowire_80_15",
+   "id": "nanowire_80_15",
+   "options": {
+    "corrPower": 1.0,
+    "edgeBoundary": 4,
+    "maxNumPeaks": 1000,
+    "minAbsoluteIntensity": 8.0,
+    "minPeakSpacing": 5.0,
+    "minRelativeIntensity": 0.0,
+    "relativeReferenceMinimumRadiusPx": 0,
+    "relativeToPeak": 0,
+    "sigma_cc": 0.0,
+    "sigma_dp": 0.0,
+    "subpixel": 1,
+    "upsample_factor": 8
+   },
+   "pattern": 3,
+   "scene": "nanowire"
+  },
+  {
+   "expected": "e_nanowire_8_8",
+   "id": "nanowire_8_8",
+   "options": {
+    "corrPower": 1.0,
+    "edgeBoundary": 4,
+    "maxNumPeaks": 1000,
+    "minAbsoluteIntensity": 8.0,
+    "minPeakSpacing": 5.0,
+    "minRelativeIntensity": 0.0,
+    "relativeReferenceMinimumRadiusPx": 0,
+    "relativeToPeak": 0,
+    "sigma_cc": 0.0,
+    "sigma_dp": 0.0,
+    "subpixel": 1,
+    "upsample_factor": 8
+   },
+   "pattern": 4,
+   "scene": "nanowire"
+  },
+  {
+   "expected": "e_nanowire_98_22",
+   "id": "nanowire_98_22",
+   "options": {
+    "corrPower": 1.0,
+    "edgeBoundary": 4,
+    "maxNumPeaks": 1000,
+    "minAbsoluteIntensity": 8.0,
+    "minPeakSpacing": 5.0,
+    "minRelativeIntensity": 0.0,
+    "relativeReferenceMinimumRadiusPx": 0,
+    "relativeToPeak": 0,
+    "sigma_cc": 0.0,
+    "sigma_dp": 0.0,
+    "subpixel": 1,
+    "upsample_factor": 8
+   },
+   "pattern": 5,
+   "scene": "nanowire"
+  },
+  {
+   "expected": "e_nanowire_0_27",
+   "id": "nanowire_0_27",
+   "options": {
+    "corrPower": 1.0,
+    "edgeBoundary": 4,
+    "maxNumPeaks": 1000,
+    "minAbsoluteIntensity": 8.0,
+    "minPeakSpacing": 5.0,
+    "minRelativeIntensity": 0.0,
+    "relativeReferenceMinimumRadiusPx": 0,
+    "relativeToPeak": 0,
+    "sigma_cc": 0.0,
+    "sigma_dp": 0.0,
+    "subpixel": 1,
+    "upsample_factor": 8
+   },
+   "pattern": 6,
+   "scene": "nanowire"
+  },
+  {
+   "expected": "e_nio_144_176",
+   "id": "nio_144_176",
+   "options": {
+    "corrPower": 1.0,
+    "edgeBoundary": 4,
+    "maxNumPeaks": 1000,
+    "minAbsoluteIntensity": 1.0,
+    "minPeakSpacing": 8.0,
+    "minRelativeIntensity": 0.0,
+    "relativeReferenceMinimumRadiusPx": 0,
+    "relativeToPeak": 0,
+    "sigma_cc": 0.0,
+    "sigma_dp": 0.0,
+    "subpixel": 1,
+    "upsample_factor": 8
+   },
+   "pattern": 0,
+   "scene": "nio"
+  },
+  {
+   "expected": "e_nio_8_96",
+   "id": "nio_8_96",
+   "options": {
+    "corrPower": 1.0,
+    "edgeBoundary": 4,
+    "maxNumPeaks": 1000,
+    "minAbsoluteIntensity": 1.0,
+    "minPeakSpacing": 8.0,
+    "minRelativeIntensity": 0.0,
+    "relativeReferenceMinimumRadiusPx": 0,
+    "relativeToPeak": 0,
+    "sigma_cc": 0.0,
+    "sigma_dp": 0.0,
+    "subpixel": 1,
+    "upsample_factor": 8
+   },
+   "pattern": 1,
+   "scene": "nio"
+  },
+  {
+   "expected": "e_nio_96_80",
+   "id": "nio_96_80",
+   "options": {
+    "corrPower": 1.0,
+    "edgeBoundary": 4,
+    "maxNumPeaks": 1000,
+    "minAbsoluteIntensity": 1.0,
+    "minPeakSpacing": 8.0,
+    "minRelativeIntensity": 0.0,
+    "relativeReferenceMinimumRadiusPx": 0,
+    "relativeToPeak": 0,
+    "sigma_cc": 0.0,
+    "sigma_dp": 0.0,
+    "subpixel": 1,
+    "upsample_factor": 8
+   },
+   "pattern": 2,
+   "scene": "nio"
+  },
+  {
+   "expected": "e_nio_104_112",
+   "id": "nio_104_112",
+   "options": {
+    "corrPower": 1.0,
+    "edgeBoundary": 4,
+    "maxNumPeaks": 1000,
+    "minAbsoluteIntensity": 1.0,
+    "minPeakSpacing": 8.0,
+    "minRelativeIntensity": 0.0,
+    "relativeReferenceMinimumRadiusPx": 0,
+    "relativeToPeak": 0,
+    "sigma_cc": 0.0,
+    "sigma_dp": 0.0,
+    "subpixel": 1,
+    "upsample_factor": 8
+   },
+   "pattern": 3,
+   "scene": "nio"
+  },
+  {
+   "expected": "e_nio_8_152",
+   "id": "nio_8_152",
+   "options": {
+    "corrPower": 1.0,
+    "edgeBoundary": 4,
+    "maxNumPeaks": 1000,
+    "minAbsoluteIntensity": 1.0,
+    "minPeakSpacing": 8.0,
+    "minRelativeIntensity": 0.0,
+    "relativeReferenceMinimumRadiusPx": 0,
+    "relativeToPeak": 0,
+    "sigma_cc": 0.0,
+    "sigma_dp": 0.0,
+    "subpixel": 1,
+    "upsample_factor": 8
+   },
+   "pattern": 4,
+   "scene": "nio"
+  },
+  {
+   "expected": "e_nio_64_104",
+   "id": "nio_64_104",
+   "options": {
+    "corrPower": 1.0,
+    "edgeBoundary": 4,
+    "maxNumPeaks": 1000,
+    "minAbsoluteIntensity": 1.0,
+    "minPeakSpacing": 8.0,
+    "minRelativeIntensity": 0.0,
+    "relativeReferenceMinimumRadiusPx": 0,
+    "relativeToPeak": 0,
+    "sigma_cc": 0.0,
+    "sigma_dp": 0.0,
+    "subpixel": 1,
+    "upsample_factor": 8
+   },
+   "pattern": 5,
+   "scene": "nio"
+  },
+  {
+   "expected": "e_nio_0_0",
+   "id": "nio_0_0",
+   "options": {
+    "corrPower": 1.0,
+    "edgeBoundary": 4,
+    "maxNumPeaks": 1000,
+    "minAbsoluteIntensity": 1.0,
+    "minPeakSpacing": 8.0,
+    "minRelativeIntensity": 0.0,
+    "relativeReferenceMinimumRadiusPx": 0,
+    "relativeToPeak": 0,
+    "sigma_cc": 0.0,
+    "sigma_dp": 0.0,
+    "subpixel": 1,
+    "upsample_factor": 8
+   },
+   "pattern": 6,
+   "scene": "nio"
+  }
+ ],
+ "generator": "tools/bragg-real/pins.py",
+ "licence": "CC-BY-4.0 (both Zenodo records)",
+ "scenes": {
+  "nanowire": {
+   "columns": 144,
+   "file": "twinned_nanowire.hdf5",
+   "kernel": "k_nanowire",
+   "kernel_radii": [
+    2.98055421308936,
+    9.935180710297868
+   ],
+   "md5": "2765fa855db8bc011252dbb425facc81",
+   "mean": "m_nanowire",
+   "patterns": "p_nanowire",
+   "positions": [
+    [
+     20,
+     15
+    ],
+    [
+     40,
+     15
+    ],
+    [
+     60,
+     15
+    ],
+    [
+     80,
+     15
+    ],
+    [
+     8,
+     8
+    ],
+    [
+     98,
+     22
+    ],
+    [
+     0,
+     27
+    ]
+   ],
+   "probe_radius": 2.483795177574467,
+   "rows": 144,
+   "synthetic_width": 0.7,
+   "zenodo": 14113591
+  },
+  "nio": {
+   "columns": 384,
+   "file": "20210306_114758.hdf5",
+   "kernel": "k_nio",
+   "kernel_radii": [
+    5.61731192769461,
+    18.724373092315368
+   ],
+   "md5": "7565d905fb2cb413aef9be8e6207dfe7",
+   "mean": "m_nio",
+   "patterns": "p_nio",
+   "positions": [
+    [
+     144,
+     176
+    ],
+    [
+     8,
+     96
+    ],
+    [
+     96,
+     80
+    ],
+    [
+     104,
+     112
+    ],
+    [
+     8,
+     152
+    ],
+    [
+     64,
+     104
+    ],
+    [
+     0,
+     0
+    ]
+   ],
+   "probe_radius": 4.681093273078842,
+   "rows": 384,
+   "synthetic_width": 0.7,
+   "zenodo": 8233585
+  }
+ },
+ "versions": {
+  "h5py": "3.16.0",
+  "numpy": "2.5.4",
+  "py4DSTEM": "0.14.19",
+  "python": "3.13.18",
+  "scipy": "1.18.1"
+ }
+}

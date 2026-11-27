@@ -164,3 +164,20 @@ Licenses/SciPy-BSD-3-Clause.txt.
 
 Licence note: CuboKit is GPL-3.0-only. Anyone who links it into an app or tool must license the combined work under GPL-3.0 or a
 compatible licence.
+
+
+================================================================================
+Recorded patterns in Tests/CuboBraggTests/Fixtures/bragg-real.u8
+================================================================================
+
+Fourteen diffraction patterns, unchanged (uint8), from two public datasets,
+used under the Creative Commons Attribution 4.0 licence
+(https://creativecommons.org/licenses/by/4.0/):
+
+    Carter Francis, "Pyxem 4D STEM Demo Data", Zenodo (2024),
+    https://doi.org/10.5281/zenodo.14113591 - twinned_nanowire.hdf5
+
+    Andy Bridger, "Mixed Phase Test Datasets for py4dstem", Zenodo (2023),
+    https://doi.org/10.5281/zenodo.8233585 - 20210306_114758.hdf5
+
+tools/bragg-real/pins.py names the scan positions taken.

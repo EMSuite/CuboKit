@@ -159,5 +159,15 @@ crystal a disc is brightest near its exact Bragg condition, its inner edge, so t
 inside the disc's geometric centre. The 24 noiseless poly cases run on every pull request; the other 72 also run in the fast
 target (each is a single 128 × 128 pattern).
 
+Recorded data (`tools/bragg-real/pins.py`, `Tests/CuboBraggTests/Fixtures/bragg-real.{json,f64,u8}`, 3.8 MB) holds the detector
+on 14 patterns of two public datasets (CC-BY-4.0, credited in `NOTICE`): a precession scan of a twinned GaAs nanowire (Zenodo
+14113591, 144 × 144 uint8 at 300 kV) and NiO and layered oxide grains on a four-chip detector with its gaps (Zenodo 8233585,
+384 × 384 uint8), one off-sample pattern each. Neither has a vacuum probe, so the recipe is py4DSTEM's tutorial for that case
+(orient_strain_01_WS2): the radius of the scan's mean pattern (`get_probe_size`), a synthetic probe of that radius
+(`SyntheticProbe.make`, width 0.7), its sigmoid kernel (radii 1.2 r and 4 r), then `find_Bragg_disks` with the tutorial's
+keywords and the two it tunes per dataset: the absolute floor just above the off-sample noise peaks (8 and 1) and the
+spacing under the spot spacing (5 and 8 px). Tolerances as above; the off-sample patterns give the direct beam at most.
+
 Regenerate with `tools/bragg/pins.py` (`CONTRIBUTING.md`); the matrix with `tools/bragg-matrix/pins.py` in that environment
-plus `tools/bragg-matrix/requirements.txt`.
+plus `tools/bragg-matrix/requirements.txt`; the recorded data with `tools/bragg-real/pins.py` in the py4DSTEM environment
+(it downloads the two files from Zenodo once and checks their MD5).
