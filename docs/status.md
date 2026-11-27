@@ -1,4 +1,4 @@
-# Status: CuboKit 0.12.1 <!-- x-release-please-version -->
+# Status: CuboKit 0.13.0 <!-- x-release-please-version -->
 
 Live and tested: the cube model (eager, memory-mapped, `ViewedCube` crop and bin, `ResidentCube` held in a Metal buffer),
 the calibration model (`Calibration`, `ScanField`, coordinate axes and grids, `CalibrationMeasurement`), the cube edits
