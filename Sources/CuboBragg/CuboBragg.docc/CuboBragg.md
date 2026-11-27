@@ -15,7 +15,7 @@ through Bluestein's chirp-z, slower and at the same tolerances. ``BraggDetector/
 maxima after each stage of the selection, so a short or empty result can be explained; ``BraggDetector/fillNonFinite(_:rows:columns:)``
 is the median fill of non-finite pixels, public.
 
-``BraggDiskOptions`` defaults are py4DSTEM's. The mac4DSTEM behaviours that differ are named options, all off by default:
+``BraggDiskOptions`` defaults are py4DSTEM's. The 4DSTEM Studio behaviours that differ are named options, all off by default:
 ``BraggDiskOptions/relativeReferenceMinimumRadius``, ``BraggDiskOptions/nonFinitePixels``,
 ``BraggDiskOptions/multicorrOrder``, and the helpers ``BraggDiskOptions/mac4DSTEM`` and
 ``BraggDiskOptions/detectorAdapted(detectorRows:detectorColumns:probeRadius:base:)``.

@@ -48,12 +48,12 @@ let package = Package(
         .target(name: "CStrainLAPACK", cSettings: [.define("ACCELERATE_NEW_LAPACK")], linkerSettings: [.linkedFramework("Accelerate")]),
         .target(name: "CuboStrain", dependencies: ["CuboCore", "CuboBragg", "CStrainLAPACK"], swiftSettings: settings),
         .target(name: "CEmbeddingLAPACK", cSettings: [.define("ACCELERATE_NEW_LAPACK")], linkerSettings: [.linkedFramework("Accelerate")]),
-        // PCA and k-means: scikit-learn's behaviour as the primary API, mac4DSTEM's diffraction-embedding numerics as
+        // PCA and k-means: scikit-learn's behaviour as the primary API, 4DSTEM Studio's diffraction-embedding numerics as
         // named options (docs/embedding.md).
         .target(name: "CuboEmbedding", dependencies: ["CEmbeddingLAPACK"], swiftSettings: settings),
 
         // Bragg disk detection's numeric core: py4DSTEM's find_Bragg_disks (hybrid cross-correlation with a probe kernel, maxima,
-        // the filter cascade, parabolic and multicorr subpixel refinement), Double, CPU, with the mac4DSTEM variants as named options.
+        // the filter cascade, parabolic and multicorr subpixel refinement), Double, CPU, with the 4DSTEM Studio variants as named options.
         .target(name: "CuboBragg", dependencies: ["CuboCore", "CuboVirtual", "CuboParallax", "CuboEmbedding"], swiftSettings: settings),
         // CPU single-slice ptychography after py4DSTEM's SingleslicePtychography (probe construction, gradient descent).
         .target(name: "CuboPtycho", dependencies: ["CuboCore"], swiftSettings: settings),

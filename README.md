@@ -26,8 +26,8 @@ differs.
 | `CuboParallax` | matrix-DFT cross-correlation alignment, periodic Fourier shifts and fixed/running-reference image stacks (Double, CPU; default factor 8), constant-order preprocessing, aberration fit and correction, depth sectioning, subpixel upsampling with position correction | py4DSTEM pins; `docs/parallax-alignment.md` |
 | `CuboStrain` | basis selection from histogram maxima, measured-direction indexing, lattice fits, references and rotated strain tensors | CPU Double primary path; three original-source compatibility options; `docs/strain.md` |
 | `CuboVirtual` (polar) | py4DSTEM's polar-elliptical cube (`PolarCube`) and radial background (`RadialBackground`) | py4DSTEM pins (CPU, Double) |
-| `CuboEmbedding` | PCA and Lloyd k-means on row-major matrices; binned diffraction feature vectors; py4DSTEM's `Featurization` with NMF and Gaussian mixtures | CPU Double; scikit-learn 1.4.2 (PCA, k-means) and 1.9.1 (NMF, GMM) pins; mac4DSTEM variants as named options; `docs/embedding.md` |
-| `CuboBragg` | py4DSTEM's `find_Bragg_disks`: hybrid cross-correlation with a probe kernel, maxima, the filter cascade, parabolic and multicorr refinement, per pattern, stack or cube; the app's `ProbeRingHint`; `BraggVectorClassification`, virtual images from Bragg vectors, Bragg masks | CPU Double; mac4DSTEM differences as named options; py4DSTEM and app-source pins; `docs/bragg.md` |
+| `CuboEmbedding` | PCA and Lloyd k-means on row-major matrices; binned diffraction feature vectors; py4DSTEM's `Featurization` with NMF and Gaussian mixtures | CPU Double; scikit-learn 1.4.2 (PCA, k-means) and 1.9.1 (NMF, GMM) pins; 4DSTEM Studio variants as named options; `docs/embedding.md` |
+| `CuboBragg` | py4DSTEM's `find_Bragg_disks`: hybrid cross-correlation with a probe kernel, maxima, the filter cascade, parabolic and multicorr refinement, per pattern, stack or cube; the app's `ProbeRingHint`; `BraggVectorClassification`, virtual images from Bragg vectors, Bragg masks | CPU Double; 4DSTEM Studio differences as named options; py4DSTEM and app-source pins; `docs/bragg.md` |
 | `CuboPtycho` | CPU probe construction and full-batch single-slice complex-object gradient descent from preprocessed amplitudes | fixed positions; selected constraints; py4DSTEM pins |
 
 `CuboCore` also provides `HotPixelFilter.filter` for eager Float32 cubes, plus
@@ -189,7 +189,7 @@ change something. `docs/parity.md` is the checklist against py4DSTEM's documente
 
 GPL-3.0-only (`LICENSE`, `NOTICE`). The whole package is GPL-3.0, so anyone who links the kit into an app or tool must license the result under GPL-3.0 or a compatible licence.
 
-- The cube model and the reducers were extracted from the GPL-3.0 macOS app mac4DSTEM (same authors) and rewritten as a public API; `NOTICE` names
+- The cube model and the reducers were extracted from the GPL-3.0 macOS app 4DSTEM Studio (then mac4DSTEM; same authors) and rewritten as a public API; `NOTICE` names
   the commit and the files.
 - The detector definitions (`DetectorMask`) are a port of **py4DSTEM**'s `make_detector`, and the processing follows its
   `get_virtual_image`, `get_dp_mean`, `get_dp_max`, `get_probe_size`, `get_origin` and DPC code (GPL-3.0;
