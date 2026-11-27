@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.13.1](https://github.com/EMSuite/CuboKit/compare/0.13.0...0.13.1) (2026-11-27)
+
+
+### Fixtures and tests
+
+* the disk finder against py4DSTEM on recorded public data ([#120](https://github.com/EMSuite/CuboKit/issues/120)) ([14d656a](https://github.com/EMSuite/CuboKit/commit/14d656aaa305004c32b10a7ed39d4ff2f20bea36))
+* the disk finder against py4DSTEM on recorded public data (a GaAs nanowire SPED scan, NiO grains on a four-chip detector) ([14d656a](https://github.com/EMSuite/CuboKit/commit/14d656aaa305004c32b10a7ed39d4ff2f20bea36))
+
 ## [0.13.0](https://github.com/EMSuite/CuboKit/compare/0.12.1...0.13.0) (2026-11-26)
 
 
