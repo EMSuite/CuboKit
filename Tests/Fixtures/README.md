@@ -1,9 +1,9 @@
 # Test fixtures
 
 One row per committed fixture file under `Tests/*/Fixtures/`: size, the script under `tools/` that names it (the generator or its
-pin script; a few scripts write a whole directory; a script found only by file-name prefix, tool-folder name or test module is marked so), and a note where the origin is not the kit's own pinned reference. 154 files.
+pin script; a few scripts write a whole directory; a script found only by file-name prefix, tool-folder name or test module is marked so), and a note where the origin is not the kit's own pinned reference. 164 files.
 
-Licence: every fixture is generated from this kit's own code and the pinned Python reference (named in the README) and ships under the kit's GPL-3.0-only licence, except the rows marked *third party*. Nothing here is private data: the committed text fixtures carry no local path or name (checked by search), and real datasets are read from `$CUBOKIT_REAL_DATA` and never copied into the repo.
+Licence: every fixture is generated from this kit's own code and the pinned Python reference (named in the README) and ships under the kit's GPL-3.0-only licence, except the rows marked *third party*. Nothing here is private data: the committed text fixtures carry no local path or name (checked by search), and the owner's real datasets are read from `$CUBOKIT_REAL_DATA` and never copied into the repo. The one exception is public: `bragg-real.u8` holds 14 recorded patterns of two CC-BY-4.0 Zenodo datasets (14113591, Carter Francis; 8233585, Andy Bridger), credited in `NOTICE`.
 
 Every fixture below names its origin. One is not a Python pin: `CuboParallaxTests/Fixtures/legacy050.json` holds CuboParallax 0.5.0's own outputs (tag `0.5.0`) on the deterministic inputs of `Tests/CuboParallaxTests/LegacyInputs.swift`. `DefaultUnchangedTests` checks that the default calls still give them. It was written once, at that tag, by a throwaway Swift generator that is not kept. To regenerate it, check out `0.5.0`, run the calls `DefaultUnchangedTests` makes on `LegacyInputs`, and write each result array under the key the test reads. Since it guards against regressions, a regenerated file must be byte-identical or the change explained.
 
@@ -13,6 +13,9 @@ Every fixture below names its origin. One is not a Python pin: `CuboParallaxTest
 |---|---|---|---|
 | `CuboBraggTests/Fixtures/bragg-matrix.f64` | 6.5 MB | `tools/bragg-matrix/pins.py` | patterns simulated with abTEM 1.0.10 |
 | `CuboBraggTests/Fixtures/bragg-matrix.json` | 199.3 KB | `tools/bragg-matrix/pins.py` |  |
+| `CuboBraggTests/Fixtures/bragg-real.f64` | 2.6 MB | `tools/bragg-real/pins.py` | mean patterns and kernels of the recorded data below |
+| `CuboBraggTests/Fixtures/bragg-real.json` | 9.4 KB | `tools/bragg-real/pins.py` |  |
+| `CuboBraggTests/Fixtures/bragg-real.u8` | 1.1 MB | `tools/bragg-real/pins.py` | *third party*: recorded patterns, Zenodo 14113591 and 8233585, CC-BY-4.0 (`NOTICE`) |
 | `CuboBraggTests/Fixtures/bragg.f64` | 506.4 KB | `tools/bragg/pins.py` |  |
 | `CuboBraggTests/Fixtures/bragg.json` | 24.3 KB | `tools/bragg/pins.py` |  |
 | `CuboBraggTests/Fixtures/braggmask.json` | 103.5 KB | `tools/braggmask/pins.py` |  |
