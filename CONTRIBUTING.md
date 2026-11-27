@@ -43,7 +43,7 @@ export PY4DSTEM_SRC=$PWD/../py4DSTEM-f050d207
 |---|---|---|
 | `PY4DSTEM_SRC` | a git checkout of py4DSTEM at `f050d207`; the generators check that the installed package equals it | `bragg`, `cubeview`, `hot-pixels`, `origin`, `parallax`, `ptycho`, `rereference`, `strain` |
 | `PY4DSTEM_TEST_DATA` | py4DSTEM's test data folder (`small_datacube.dm4`, `Au_sim.h5`) | `parallax/pins.py`, `strain`, `virtual real` |
-| `MAC4DSTEM_REPO` | a clone of mac4DSTEM, for the pins transcribed from the original app at a named commit | `bragg`, `embedding`, `idpc`, `origin`, `parallax`, `strain` |
+| `MAC4DSTEM_REPO` | a clone of 4DSTEM-Studio (formerly mac4DSTEM), for the pins transcribed from the original app at a named commit | `bragg`, `embedding`, `idpc`, `origin`, `parallax`, `strain` |
 | `IMAGOKIT_REPO` | a clone of ImagoKit | `bragg` |
 | `CUBOKIT_REAL_DATA` | the real-data exports, never in the repository (default `~/Library/Caches/CuboKit/real-data`) | the `real` modes of `virtual`, `com-dpc`, `origin-fit`, `probes` |
 

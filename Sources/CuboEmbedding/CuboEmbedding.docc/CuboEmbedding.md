@@ -5,7 +5,7 @@ and py4DSTEM's featurization on top of them.
 
 Use ``PCA/fit(_:rows:columns:components:variant:)`` and ``KMeans/fit(_:rows:columns:initialCentroids:maxIterations:tolerance:isCancelled:)``
 for scikit-learn 1.4.2 conventions. ``PCA/Variant/diffractionEmbeddingApp``, ``KMeans/fitSeeded(_:rows:columns:groups:seed:maxIterations:isCancelled:)``
-and ``DiffractionFeatures`` reproduce mac4DSTEM's diffraction-embedding numerics as named options.
+and ``DiffractionFeatures`` reproduce 4DSTEM Studio's diffraction-embedding numerics as named options.
 Settings and presentation are the caller's.
 
 For data too large to hold, ``PCACovarianceAccumulator`` streams the mean and covariance block by block,

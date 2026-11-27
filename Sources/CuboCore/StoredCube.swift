@@ -83,7 +83,6 @@ package final class StoredBytes: @unchecked Sendable {
     package let elementType: ElementType
     package let count: Int
     package let base: UnsafeMutableRawPointer
-    package var byteCount: Int { count * elementType.byteSize }
 
     /// Uninitialised room for `count` elements; the owner fills it before the first read.
     package init(elementType: ElementType, count: Int) {

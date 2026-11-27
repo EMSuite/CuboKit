@@ -25,7 +25,7 @@ print(result.labels)                                                    // [0, 0
 ```
 
 The default variant, ``PCA/Variant/scikitLearn``, follows scikit-learn 1.4.2, including its component signs.
-``PCA/Variant/diffractionEmbeddingApp`` follows mac4DSTEM's own Float32 numerics. ``KMeans/fitSeeded(_:rows:columns:groups:seed:maxIterations:isCancelled:)``
+``PCA/Variant/diffractionEmbeddingApp`` follows 4DSTEM Studio's own Float32 numerics. ``KMeans/fitSeeded(_:rows:columns:groups:seed:maxIterations:isCancelled:)``
 chooses the first centroids from a seed, as the app does. scikit-learn's random seeding is not provided.
 
 ## When the patterns do not fit in memory

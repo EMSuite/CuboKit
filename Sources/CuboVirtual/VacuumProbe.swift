@@ -53,7 +53,7 @@ public struct VacuumProbe: Sendable, Equatable {
                 }
                 var d = (0..<n).map { Double(tile.values[k * n + $0]) * (detectorMask?[$0] ?? 1) }
                 if align {
-                    let s = alignmentShift(current, d, qy, qx, fft)
+                    let s = alignmentShift(current, d, qx, fft)
                     d = VirtualImaging.roll(d, qy, qx, s.row, s.column)
                 }
                 let w = Double(count)
@@ -70,7 +70,7 @@ public struct VacuumProbe: Sendable, Equatable {
     }
 
     /// py4DSTEM's get_shift: the first argmax of max(Re(IFFT2(FFT2(a) · conj(FFT2(b)))), 0), the roll that lays b on a.
-    static func alignmentShift(_ a: [Double], _ b: [Double], _ qy: Int, _ qx: Int, _ fft: FFT2D) -> (row: Int, column: Int) {
+    static func alignmentShift(_ a: [Double], _ b: [Double], _ qx: Int, _ fft: FFT2D) -> (row: Int, column: Int) {
         var ar = a, ai = [Double](repeating: 0, count: a.count)
         var br = b, bi = [Double](repeating: 0, count: b.count)
         fft.transform(&ar, &ai, inverse: false)
